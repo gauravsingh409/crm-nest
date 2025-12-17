@@ -10,7 +10,8 @@ enum Role {
   SUPER_ADMIN
   ADMIN
   MANAGER
-  SALES_MANAGER
+  BRANCH_MANAGER
+  CONTACT_AGENT
 }
 
 model User {

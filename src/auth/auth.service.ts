@@ -40,10 +40,10 @@ export class AuthService {
       where: { email },
       include: { profile: true },
     });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) throw new UnauthorizedException('No user found');
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new UnauthorizedException('Invalid credentials');
+    if (!isValid) throw new UnauthorizedException('Invalid password');
 
     return user;
   }
