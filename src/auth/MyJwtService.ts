@@ -8,6 +8,7 @@ export class MyJwtService {
   // Generate access token
   generateAccessToken(payload: any) {
     return this.jwtService.sign(payload, {
+      subject: 'access-token',
       secret: process.env.JWT_SECRET,
       expiresIn: '15m', // short-lived
     });
@@ -15,6 +16,7 @@ export class MyJwtService {
 
   generateRefreshToken(payload: any) {
     return this.jwtService.sign(payload, {
+      subject: 'refresh-token',
       secret: process.env.JWT_SECRET,
       expiresIn: '7d', // long-lived
     });
