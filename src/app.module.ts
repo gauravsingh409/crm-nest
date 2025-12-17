@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { BootstrapModule } from './bootstrap/bootstrap.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { BootstrapModule } from './bootstrap/bootstrap.module';
       isGlobal: true,
     }),
     BootstrapModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
