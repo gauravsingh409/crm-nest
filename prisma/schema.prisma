@@ -6,6 +6,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// User Model
 enum Role {
   SUPER_ADMIN
   ADMIN
@@ -42,3 +43,47 @@ model UserProfile {
   
   @@map("user_profiles")
 }
+
+// Leads Model
+enum LeadSource {
+  FACEBOOK
+  INSTAGRAM
+  YOUTUBE
+  LINKEDIN
+}
+
+enum LeadCategory {
+  FERTILITY_PATIENT
+  NOT_FERTILITY_PATIENT
+
+}
+
+enum LeadService {
+ANTENATAL_CHECKUP
+FERTILITY_PRESERVATION
+INFERTILITY_TREATMENT
+INFERTILITY_DIAGNOSIS
+}
+
+model Lead {
+  id          String        @id @default(cuid())
+  firstName   String
+  lastName    String
+  phone       String
+  email       String
+  whatsapp    String?
+  categories  LeadCategory
+  service     LeadService
+  source      LeadSource
+  owner       String?
+  address     String?
+  dob         DateTime?
+  createdAt   DateTime      @default(now())
+  description String?
+
+  @@map("leads")
+  @@index([source])
+  @@index([categories])
+  @@index([service])
+}
+

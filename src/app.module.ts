@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { BootstrapModule } from './bootstrap/bootstrap.module';
 import { UserModule } from './user/user.module';
+import { LeadModule } from './lead/lead.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     }),
     BootstrapModule,
     UserModule,
+    LeadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
