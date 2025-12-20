@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -10,6 +11,8 @@ import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { ResponseService } from 'src/common/response/response.service';
+import { Prisma } from '@prisma/client';
+import path from 'path';
 
 @Injectable()
 export class UserService {
@@ -18,47 +21,37 @@ export class UserService {
     private responseService: ResponseService,
   ) {}
 
-  async createUser(request: CreateUserDto) {
-    const hashPassword = await bcrypt.hash(
+  async createUser(request: CreateUserDto, profileImage?: string) {
+    const hashedPassword = await bcrypt.hash(
       request.password,
-      parseInt(process.env.BCRYPT_SALT_ROUNDS || '10'),
+      Number(process.env.BCRYPT_SALT_ROUNDS ?? 10),
     );
+
     try {
-      const user = await this.prismaService.user.create({
+      return await this.prismaService.user.create({
         data: {
+          email: request.email,
+          password: hashedPassword,
+          role: request.role,
           profile: {
             create: {
               firstName: request.firstName,
               lastName: request.lastName,
               phone: request.phone,
+              profile: profileImage
+                ? path.resolve(process.env.APP_URL!, profileImage)
+                : null,
             },
           },
-          email: request.email,
-          password: hashPassword,
-          role: request.role,
-        },
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          profile: {
-            select: {
-              firstName: true,
-              lastName: true,
-              phone: true,
-            },
-          },
-          createdAt: true,
         },
       });
-      return user;
     } catch (error) {
-      // 4. Handle unique constraint violation (email)
-      if (error.code === 'P2002') {
-        throw new ConflictException('Email already exists');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException('Email already exists');
+        }
       }
-
-      throw error;
+      throw new InternalServerErrorException('Failed to create user');
     }
   }
 
@@ -171,6 +164,7 @@ export class UserService {
     const user = await this.prismaService.user.findUnique({
       where: { id },
       omit: { password: true },
+      include: { profile: true },
     });
 
     if (!user) {
@@ -178,8 +172,15 @@ export class UserService {
     }
 
     return {
-      message: 'User details retrieved successfully',
-      user,
+      ...user,
+      profile: user
+        ? {
+            ...user.profile,
+            profile: user.profile?.profile
+              ? `${process.env.APP_URL}${user.profile.profile}`
+              : null,
+          }
+        : null,
     };
   }
 }

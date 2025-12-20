@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,12 +9,18 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseService } from 'src/common/response/response.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { FileUploadInterceptor } from 'src/interceptor/file-upload.interceptor';
 
 @Controller('user')
 export class UserController {
@@ -36,8 +43,24 @@ export class UserController {
 
   @Post('/')
   @HttpCode(201)
-  async createUser(@Body() body: CreateUserDto) {
-    const savedUser = await this.userService.createUser(body);
+  @UseInterceptors(
+    FileUploadInterceptor({
+      destination: './uploads/profiles',
+      fileNamePrefix: 'profile',
+      maxSize: 2 * 1024 * 1024, // 2MB
+      allowedMimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
+    }),
+  )
+  async createUser(
+    @Body() body: CreateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const profileImagePath = file
+      ? `/uploads/profiles/${file.filename}`
+      : undefined;
+
+    const savedUser = await this.userService.createUser(body, profileImagePath);
+
     return this.responseService.success(
       savedUser,
       'User created successfully',

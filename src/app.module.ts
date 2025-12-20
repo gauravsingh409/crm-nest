@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { BootstrapModule } from './bootstrap/bootstrap.module';
 import { UserModule } from './user/user.module';
 import { LeadModule } from './lead/lead.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,6 +20,13 @@ import { LeadModule } from './lead/lead.module';
     BootstrapModule,
     UserModule,
     LeadModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
