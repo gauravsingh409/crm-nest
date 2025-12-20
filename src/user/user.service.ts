@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto, UserRole } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -130,5 +134,35 @@ export class UserService {
         pagination.limit,
       ),
     };
+  }
+
+  async deleteUser(id: string) {
+    try {
+      const deletedUser = await this.prismaService.user.delete({
+        where: { id },
+        select: {
+          id: true,
+          email: true,
+          profile: {
+            select: {
+              firstName: true,
+              lastName: true,
+              phone: true,
+            },
+          },
+        },
+      });
+
+      return {
+        message: 'User deleted successfully',
+        user: deletedUser,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        // Prisma error code for "Record not found"
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+      throw error;
+    }
   }
 }

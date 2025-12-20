@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -46,6 +47,16 @@ export class UserController {
       updateUser,
       'User updated successfully',
       201,
+    );
+  }
+
+  @Delete('/:id')
+  async deleteUser(@Param('id') id: string) {
+    const deleteUser = await this.userService.deleteUser(id);
+    return this.responseService.success(
+      deleteUser,
+      'User deleted successfully',
+      200,
     );
   }
 }
