@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ResponseService {
-  success(data: any, message = 'Success', statusCode = 200) {
+  success(data: unknown, message = 'Success', statusCode = 200) {
     return {
       success: true,
       statusCode,

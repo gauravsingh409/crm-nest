@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -164,5 +165,38 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  async getUserDetails(id: string) {
+    if (!id) {
+      throw new BadRequestException('User ID is required');
+    }
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phone: true,
+          },
+        },
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return {
+      message: 'User details retrieved successfully',
+      user,
+    };
   }
 }

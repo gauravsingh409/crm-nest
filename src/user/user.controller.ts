@@ -28,6 +28,12 @@ export class UserController {
     return this.responseService.pagination(records, meta);
   }
 
+  @Get('/:id')
+  async getUserDetails(@Param('id') id: string) {
+    const user = await this.userService.getUserDetails(id);
+    return this.responseService.success(user, 'User details retrived', 200);
+  }
+
   @Post('/')
   @HttpCode(201)
   async createUser(@Body() body: CreateUserDto) {
