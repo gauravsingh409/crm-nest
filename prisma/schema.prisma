@@ -23,26 +23,26 @@ model User {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  leads     Lead[] @relation("LeadOwner")
+
+  leads          Lead[]         @relation("LeadOwner")
   leadActivities LeadActivity[] @relation("ActivityPerformer")
   // Relationships
-  profile   UserProfile?
-  
+  profile        UserProfile?
+
   @@map("users")
 }
 
 model UserProfile {
-  id          String   @id @default(cuid())
-  firstName   String
-  lastName    String
-  phone       String?
-  profile      String?
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  phone     String?
+  profile   String?
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("user_profiles")
 }
 
@@ -65,26 +65,27 @@ enum LeadSource {
 }
 
 enum LeadCategory {
-FERTILITY_PATIENT
-NOT_FERTILITY_PATIENT
-SPAM_TEST_LEAD
-GYANEA_PATIENT
+  FERTILITY_PATIENT
+  NOT_FERTILITY_PATIENT
+  SPAM_TEST_LEAD
+  GYANEA_PATIENT
 }
 
 enum LeadService {
-IVF
-IUI
-EGG_FREEZING
-EMBRYO_FREEZING
-DONOR_PROGRAM_EGG
-DONOR_PROGRAM_SPERM
-PGT_PGD
-TESA_PESA
-ANTENATAL_CHECKUP
-INFERTILITY_DIAGNOSIS_GENERAL_COUNSELLING
-GYANEA
-FERTILITY_PRESERVATION
+  IVF
+  IUI
+  EGG_FREEZING
+  EMBRYO_FREEZING
+  DONOR_PROGRAM_EGG
+  DONOR_PROGRAM_SPERM
+  PGT_PGD
+  TESA_PESA
+  ANTENATAL_CHECKUP
+  INFERTILITY_DIAGNOSIS_GENERAL_COUNSELLING
+  GYANEA
+  FERTILITY_PRESERVATION
 }
+
 enum LeadStatus {
   NEW
   CONTACTED
@@ -93,33 +94,32 @@ enum LeadStatus {
   CONVERTED
 }
 
-
 model Lead {
-  id          String        @id @default(cuid())
-  firstName   String
-  lastName    String
-  phone       String
-  email       String?
-  whatsapp    String?
-  categories  LeadCategory
-  service     LeadService
-  source      LeadSource
-  status      LeadStatus  @default(NEW)
-  ownerId     String?
-  owner       User? @relation("LeadOwner", fields: [ownerId], references: [id])
-  address     String?
-  dob         DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime @updatedAt
-  description String?
+  id             String         @id @default(cuid())
+  firstName      String
+  lastName       String
+  phone          String
+  email          String?
+  whatsapp       String?
+  categories     LeadCategory
+  service        LeadService
+  source         LeadSource
+  status         LeadStatus     @default(NEW)
+  ownerId        String?
+  owner          User?          @relation("LeadOwner", fields: [ownerId], references: [id])
+  address        String?
+  dob            DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  description    String?
+  leadActivities LeadActivity[]
 
-  @@map("leads")
   @@index([source])
   @@index([categories])
   @@index([service])
   @@index([status])
   @@index([ownerId])
-  leadActivities LeadActivity[]
+  @@map("leads")
 }
 
 // Lead Activities
@@ -127,6 +127,7 @@ model Lead {
 enum ActivityType {
   CALL
 }
+
 enum CallOutcome {
   SUCCESS
   BUSY
@@ -136,17 +137,17 @@ enum CallOutcome {
   RECEIVED_BY_FAMILY
 }
 
-model LeadActivity{
-  id           String        @id @default(uuid())
-  leadId       String
-  type         ActivityType
-  callOutcome  CallOutcome?
-  durationSec  Int?
-  notes        String?
+model LeadActivity {
+  id            String       @id @default(uuid())
+  leadId        String
+  type          ActivityType
+  callOutcome   CallOutcome?
+  durationSec   Int?
+  notes         String?
   performedById String
-  performedBy   User @relation("ActivityPerformer", fields: [performedById], references: [id])  
-  lead         Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  createdAt    DateTime      @default(now())
+  performedBy   User         @relation("ActivityPerformer", fields: [performedById], references: [id])
+  lead          Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
 
   @@index([leadId])
   @@index([type])
