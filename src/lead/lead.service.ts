@@ -84,7 +84,11 @@ export class LeadService {
           ...(request.categories && { categories: request.categories }),
           ...(request.service && { service: request.service }),
           ...(request.source && { source: request.source }),
-          ...(request.owner && { owner: request.owner }),
+          ...(request.owner && {
+            owner: request.owner
+              ? { connect: { id: request.owner } }
+              : { disconnect: true },
+          }),
           ...(request.address && { address: request.address }),
           ...(request.dob && { dob: new Date(request.dob) }),
           ...(request.description && { description: request.description }),

@@ -78,8 +78,19 @@ export class UserController {
       allowedMimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
     }),
   )
-  async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    const updateUser = await this.userService.updateUser(id, body);
+  async updateUser(
+    @Param('id') id: string,
+    @Body() body: UpdateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const profileImagePath = file
+      ? `/uploads/profiles/${file.filename}`
+      : undefined;
+    const updateUser = await this.userService.updateUser(
+      id,
+      body,
+      profileImagePath,
+    );
     return this.responseService.success(
       updateUser,
       'User updated successfully',

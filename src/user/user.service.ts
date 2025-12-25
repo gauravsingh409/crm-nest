@@ -55,7 +55,7 @@ export class UserService {
     }
   }
 
-  async updateUser(id: string, request: UpdateUserDto) {
+  async updateUser(id: string, request: UpdateUserDto, profileImage?: string) {
     if (request.password) {
       request.password = await bcrypt.hash(
         request.password,
@@ -77,9 +77,7 @@ export class UserService {
               ...(request.firstName && { firstName: request.firstName }),
               ...(request.lastName && { lastName: request.lastName }),
               ...(request.phone && { phone: request.phone }),
-              firstName: request.firstName,
-              lastName: request.lastName,
-              phone: request.phone,
+              ...(profileImage && { profile: profileImage }),
             },
           },
         },
