@@ -13,8 +13,10 @@ import { LeadService } from './lead.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('lead')
+@ApiTags('Leads')
 export class LeadController {
   constructor(
     private leadService: LeadService,
@@ -38,6 +40,12 @@ export class LeadController {
   }
 
   @Post('/')
+  @ApiBody({ type: CreateLeadDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Lead created successfully',
+    type: CreateLeadDto,
+  })
   async create(@Body() request: CreateLeadDto) {
     const lead = await this.leadService.createLead(request);
     return this.responseService.success(lead, 'Lead created successfully', 201);

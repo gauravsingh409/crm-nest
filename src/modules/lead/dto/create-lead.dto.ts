@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { LeadCategory, LeadService, LeadSource } from '@prisma/client';
 import {
   IsDateString,
@@ -9,6 +10,7 @@ import {
 
 export class CreateLeadDto {
   @IsString()
+  @ApiProperty()
   firstName: string;
 
   @IsString()
