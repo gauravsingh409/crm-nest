@@ -10,14 +10,23 @@ import {
 import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
+import { ResponseService } from 'src/common/response/response.service';
 
 @Controller('branch')
 export class BranchController {
-  constructor(private readonly branchService: BranchService) {}
+  constructor(
+    private readonly branchService: BranchService,
+    private responseService: ResponseService,
+  ) {}
 
   @Post()
-  create(@Body() createBranchDto: CreateBranchDto) {
-    return this.branchService.create(createBranchDto);
+  async create(@Body() createBranchDto: CreateBranchDto) {
+    const response = await this.branchService.create(createBranchDto);
+    return this.responseService.success(
+      response,
+      'Branch Create successfully',
+      201,
+    );
   }
 
   @Get()

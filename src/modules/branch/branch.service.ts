@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class BranchService {
-  create(createBranchDto: CreateBranchDto) {
-    return 'This action adds a new branch';
+  constructor(private prismaService: PrismaService) {}
+
+  async create(request: CreateBranchDto) {
+    const savedBranch = await this.prismaService.branch.create({
+      data: {
+        name: request.name,
+        address: request.address,
+        phone: request.phone,
+        description: request.description,
+      },
+    });
+    return savedBranch;
   }
 
   findAll() {

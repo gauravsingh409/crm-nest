@@ -170,6 +170,7 @@ model Branch {
 model Doctor {
   id       String @id @default(cuid())
   name     String
+  phone    String
   branchId String
   branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
 

@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class DoctorService {
-  create(createDoctorDto: CreateDoctorDto) {
-    return 'This action adds a new doctor';
+  constructor(private prismaService: PrismaService) {}
+
+  create(request: CreateDoctorDto) {
+    // const savedDoctor = this.prismaService.doctor.create({
+    //   data: {
+    //     name: request.name,
+    //     phone: request.phone,
+    //     branchId: '',
+    //   },
+    // });
   }
 
   findAll() {
