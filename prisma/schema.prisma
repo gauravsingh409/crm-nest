@@ -163,6 +163,7 @@ model Branch {
   address     String
   description String?  @db.Text
   doctors     Doctor[]
+  createdAt     DateTime     @default(now())
 
   @@map("branch")
 }
@@ -173,6 +174,7 @@ model Doctor {
   phone    String
   branchId String
   branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
 
   @@index([name])
   @@index([branchId])

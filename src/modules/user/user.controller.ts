@@ -17,9 +17,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseService } from 'src/common/response/response.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { FileUploadInterceptor } from 'src/interceptor/file-upload.interceptor';
 
 @Controller('user')
