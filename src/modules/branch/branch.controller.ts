@@ -57,7 +57,12 @@ export class BranchController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.branchService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const deletedBranch = await this.branchService.remove(id);
+    return this.responseService.success(
+      deletedBranch,
+      'Branch deleted successfully',
+      200,
+    );
   }
 }

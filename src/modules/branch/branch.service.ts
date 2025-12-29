@@ -78,7 +78,11 @@ export class BranchService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} branch`;
+  async remove(id: string) {
+    try {
+      return this.prismaService.branch.delete({
+        where: { id: id },
+      });
+    } catch (error) {}
   }
 }
