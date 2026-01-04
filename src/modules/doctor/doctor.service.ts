@@ -7,14 +7,20 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class DoctorService {
   constructor(private prismaService: PrismaService) {}
 
-  create(request: CreateDoctorDto) {
-    // const savedDoctor = this.prismaService.doctor.create({
-    //   data: {
-    //     name: request.name,
-    //     phone: request.phone,
-    //     branchId: '',
-    //   },
-    // });
+  async create(request: CreateDoctorDto) {
+    try {
+      return await this.prismaService.doctor.create({
+        data: {
+          name: request.name,
+          phone: request.phone,
+          branch: {
+            connect: {
+              id: request.branch,
+            },
+          },
+        },
+      });
+    } catch (error) {}
   }
 
   findAll() {
