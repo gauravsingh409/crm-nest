@@ -22,7 +22,6 @@ export class AuthService {
         email: user.email,
         firstName: user.profile?.firstName,
         lastName: user.profile?.lastName,
-        role: user.role,
         profile: user.profile?.profile,
       },
       token: {

@@ -29,7 +29,6 @@ export class UserService {
         data: {
           email: request.email,
           password: hashedPassword,
-          role: request.role,
           profile: {
             create: {
               firstName: request.firstName,
@@ -175,7 +174,6 @@ export class UserService {
         ? `${appUrl}${user.profile.profile}`
         : null,
       email: user.email,
-      role: user.role,
       isActive: user.isActive,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

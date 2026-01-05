@@ -41,7 +41,6 @@ export class BootstrapService implements OnModuleInit {
       data: {
         email,
         password: passwordHash,
-        role: Role.SUPER_ADMIN,
         profile: {
           create: {
             firstName,

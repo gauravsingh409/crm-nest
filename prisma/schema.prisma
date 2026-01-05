@@ -6,20 +6,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// User Model
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  MANAGER
-  BRANCH_MANAGER
-  CONTACT_AGENT
-}
 
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   password  String
-  role      Role
+  roles     UserRole[]
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,6 +36,38 @@ model UserProfile {
   updatedAt DateTime @updatedAt
 
   @@map("user_profiles")
+}
+
+// Role and Permissions
+model Role{
+    id          String           @id @default(uuid())
+  name        String           @unique
+  permissions RolePermission[]
+  users       UserRole[]
+}
+
+model Permission {
+  id    String           @id @default(uuid())
+  name  String           @unique // delete_product
+  roles RolePermission[]
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
 }
 
 // Leads Model
