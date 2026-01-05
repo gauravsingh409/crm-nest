@@ -11,6 +11,8 @@ import { UserModule } from './modules/user/user.module';
 import { LeadModule } from './modules/lead/lead.module';
 import { BranchModule } from './modules/branch/branch.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
+import { RoleModule } from './modules/role/role.module';
+import { PermissionModule } from './modules/permission/permission.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { DoctorModule } from './modules/doctor/doctor.module';
       },
     }),
     DoctorModule,
+    RoleModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
