@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ResponseService } from 'src/common/response.service';
 import { LeadService } from './lead.service';
@@ -14,12 +15,16 @@ import { CreateLeadDto } from './dto/create-lead.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PERMISSIONS } from '../permission/permission';
+import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
+import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 
 @Controller('lead')
 @ApiTags('Leads')
 export class LeadController {
   constructor(private leadService: LeadService) {}
 
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Get('/')
   async findAll(@Query() pagination: PaginationDto) {
     const { meta, records } = await this.leadService.getAllLead(pagination);

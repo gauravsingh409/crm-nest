@@ -23,6 +23,7 @@ import { PermissionModule } from './modules/permission/permission.module';
     BranchModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     BootstrapModule,
     ServeStaticModule.forRoot({
