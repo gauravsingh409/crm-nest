@@ -37,12 +37,24 @@ export class UserService {
               profile: profileImage ? profileImage : null,
             },
           },
+          roles: {
+            create: {
+              role: {
+                connect: {
+                  name: request.role,
+                },
+              },
+            },
+          },
         },
         include: { profile: true },
         omit: { password: true },
       });
       return this.mapUserAndProfile(savedUser);
     } catch (error) {
+      if (error.code === 'P2025') {
+        throw new BadRequestException('Role not found');
+      }
       HandlePrismaException.conflict('Branch already exist')(error);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -63,6 +75,30 @@ export class UserService {
     }
 
     try {
+      // If role is being updated, we need to handle the relation
+      if (request.role) {
+         // First remove all existing roles for this user (enforcing single role per user for now based on DTO)
+         await this.prismaService.userRole.deleteMany({
+             where: { userId: id }
+         });
+         
+         const role = await this.prismaService.role.findUnique({
+            where: { name: request.role }
+         });
+
+         if (!role) {
+             throw new BadRequestException('Role not found');
+         }
+         
+         // Then add the new role
+         await this.prismaService.userRole.create({
+             data: {
+                 userId: id,
+                 roleId: role.id
+             }
+         });
+      }
+
       const updatedUser = await this.prismaService.user.update({
         where: { id },
         omit: { password: true },
@@ -70,7 +106,6 @@ export class UserService {
         data: {
           ...(request.email && { email: request.email }),
           ...(request.password && { password: request.password }),
-          ...(request.role && { role: request.role }),
           profile: {
             update: {
               ...(request.firstName && { firstName: request.firstName }),

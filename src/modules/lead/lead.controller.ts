@@ -19,12 +19,15 @@ import { PERMISSIONS } from '../permission/permission';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+
 @Controller('lead')
 @ApiTags('Leads')
 export class LeadController {
   constructor(private leadService: LeadService) {}
 
   @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.LEAD_READ)
   @Get('/')
   async findAll(@Query() pagination: PaginationDto) {
     const { meta, records } = await this.leadService.getAllLead(pagination);
@@ -48,18 +51,21 @@ export class LeadController {
     description: 'Lead created successfully',
     type: CreateLeadDto,
   })
+  @Permissions(PERMISSIONS.LEAD_CREATE)
   async create(@Body() request: CreateLeadDto) {
     const lead = await this.leadService.createLead(request);
     return ResponseService.success(lead, 'Lead created successfully', 201);
   }
 
   @Patch('/:id')
+  @Permissions(PERMISSIONS.LEAD_UPDATE)
   async update(@Param('id') id: string, @Body() request: UpdateLeadDto) {
     const lead = await this.leadService.updateLead(id, request);
     return ResponseService.success(lead, 'Lead updated successfully', 200);
   }
 
   @Delete('/:id')
+  @Permissions(PERMISSIONS.LEAD_DELETE)
   async remove(@Param('id') id: string) {
     const deletedLead = await this.leadService.deleteLead(id);
     return ResponseService.success(
