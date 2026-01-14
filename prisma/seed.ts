@@ -18,6 +18,7 @@ export const defaultRole = `${process.env.DEFAULT_ROLE}`
 const adapter = new PrismaPg({ connectionString })
 const prisma = new PrismaClient({ adapter })
 
+
 async function main() {
   // 1. Seed permissions
   await prisma.permission.createMany({
@@ -46,7 +47,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log('Seeding');
+  console.log('Seeding ');
 }
 
 main()

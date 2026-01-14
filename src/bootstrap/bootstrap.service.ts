@@ -11,7 +11,7 @@ export class BootstrapService implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}
 
   async onModuleInit() {
-    await this.createSuperAdmin();
+    // await this.createSuperAdmin();
   }
 
   private async createSuperAdmin() {
