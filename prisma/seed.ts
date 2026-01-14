@@ -1,6 +1,7 @@
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
-import { PERMISSIONS } from '../src/modules/permission/permission';
 import { config } from 'dotenv';
+import { PERMISSIONS } from 'src/modules/permission/permission';
 
 // 1. Load .env file explicitly before using process.env
 config();
@@ -10,9 +11,10 @@ if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is missing in .env');
 }
 
-const prisma = new PrismaClient({
+const connectionString = `${process.env.DATABASE_URL}`
 
-});
+const adapter = new PrismaPg({ connectionString })
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
   // 1. Seed permissions
@@ -41,6 +43,8 @@ async function main() {
     })),
     skipDuplicates: true,
   });
+
+  console.log('Seeding completed successfully!');
 }
 
 main()
