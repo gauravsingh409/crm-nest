@@ -12,6 +12,8 @@ if (!process.env.DATABASE_URL) {
 }
 
 const connectionString = `${process.env.DATABASE_URL}`
+export const defaultRole = `${process.env.DEFAULT_ROLE}`
+
 
 const adapter = new PrismaPg({ connectionString })
 const prisma = new PrismaClient({ adapter })
@@ -25,9 +27,9 @@ async function main() {
 
   // 2. Seed super admin role
   const adminRole = await prisma.role.upsert({
-    where: { name: 'SUPER ADMIN' },
+    where: { name: defaultRole },
     update: {},
-    create: { name: 'SUPER ADMIN' },
+    create: { name: defaultRole },
   });
 
   // 3. Assign all permissions to super admin role
@@ -44,7 +46,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log('Seeding completed successfully!');
+  console.log('Seeding');
 }
 
 main()

@@ -30,7 +30,7 @@ export class LeadController {
   @Permissions(PERMISSIONS.LEAD_READ)
   @Get('/')
   async findAll(@Query() pagination: PaginationDto) {
-    const { meta, records } = await this.leadService.getAllLead(pagination);
+    const { meta, records } = await this.leadService.findAll(pagination);
     return ResponseService.pagination(records, meta);
   }
 

@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { PermissionService } from './permission.service';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
+import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { PERMISSIONS } from './permission';
+import { PaginationDto } from 'src/common/pagination.dto';
+import { ResponseService } from 'src/common/response.service';
 
 @Controller('permission')
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
-  @Post()
-  create(@Body() createPermissionDto: CreatePermissionDto) {
-    return this.permissionService.create(createPermissionDto);
-  }
 
+
+  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @Permissions(PERMISSIONS.PERMISSION_READ)
   @Get()
-  findAll() {
-    return this.permissionService.findAll();
+  async findAll(@Query() pagination: PaginationDto) {
+    const {meta,records} = await this.permissionService.findAll(pagination) 
+    return ResponseService.pagination(records,meta)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.permissionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto) {
-    return this.permissionService.update(+id, updatePermissionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.permissionService.remove(+id);
-  }
 }

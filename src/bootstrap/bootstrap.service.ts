@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { defaultRole } from 'prisma/seed';
 
 @Injectable()
 export class BootstrapService implements OnModuleInit {
@@ -18,6 +19,15 @@ export class BootstrapService implements OnModuleInit {
     const password = process.env.SUPER_ADMIN_PASSWORD;
     const firstName = process.env.SUPER_ADMIN_FIRST_NAME;
     const lastName = process.env.SUPER_ADMIN_LAST_NAME;
+
+    const role = await this.prisma.role.findUnique({
+      where: { name: defaultRole },
+    });
+
+    if (!role) {
+      this.logger.error('SUPER ADMIN role not found! Run your seed script first.');
+      return;
+    }
 
     if (!email || !password || !firstName || !lastName) {
       this.logger.warn(
@@ -45,6 +55,15 @@ export class BootstrapService implements OnModuleInit {
           create: {
             firstName,
             lastName,
+          },
+        },
+        roles: {
+          create: {
+            role: {
+              connect: {
+                id: role.id,
+              },
+            },
           },
         },
       },

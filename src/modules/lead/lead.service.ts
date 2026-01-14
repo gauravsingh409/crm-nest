@@ -24,7 +24,7 @@ export class LeadService {
     return leadDetails;
   }
 
-  async getAllLead(pagination: PaginationDto) {
+  async findAll(pagination: PaginationDto) {
     const { limit, page } = pagination;
     const skip = (page - 1) * limit;
     const [lead, total] = await Promise.all([

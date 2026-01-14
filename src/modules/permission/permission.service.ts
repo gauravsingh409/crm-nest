@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { PaginationDto } from 'src/common/pagination.dto';
+import { ResponseService } from 'src/common/response.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PermissionService {
-  create(createPermissionDto: CreatePermissionDto) {
-    return 'This action adds a new permission';
-  }
+  constructor(private prismaService: PrismaService) {}
 
-  findAll() {
-    return `This action returns all permission`;
-  }
+  async findAll(pagination: PaginationDto) {
+    const {page,limit} = pagination;
+    const skip = (page - 1) * limit;
+    const [permission, total] = await Promise.all([
+      this.prismaService.permission.findMany({
+        skip,
+        take: limit,
+      }),
+      this.prismaService.permission.count(),
+    ]);
 
-  findOne(id: number) {
-    return `This action returns a #${id} permission`;
-  }
+    const meta = {
+      page,
+      limit,
+      total,
+    };
 
-  update(id: number, updatePermissionDto: UpdatePermissionDto) {
-    return `This action updates a #${id} permission`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} permission`;
+    return { meta: ResponseService.paginationMetaData(total,page, limit), records: permission };
   }
 }
