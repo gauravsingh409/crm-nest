@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -117,16 +117,43 @@ export class RoleService {
     }
   }
 
+  /**
+   * Remove a role by id
+   * @param id 
+   * @returns Promise<Role>
+   */
   async remove(id: string) {
-    try {
-      const role = await this.prismaService.role.delete({
-        where: {
-          id: id
-        }
-      })
-      return role;
-    } catch (error) {
-      return HandlePrismaException.notFound('Role not found')(error);
-    }
+    return await this.prismaService.$transaction(async (tx) => {
+
+      // 1. Check existence first
+      const roleExists = await tx.role.findUnique({
+        where: { id }
+      });
+
+      if (!roleExists) {
+        throw new NotFoundException(`Role with ID ${id} not found`);
+      }
+
+      // 2. Safety Check: Protect Users
+      const userCount = await tx.userRole.count({
+        where: { roleId: id }
+      });
+
+      if (userCount > 0) {
+        throw new BadRequestException(
+          `Security Risk: Cannot delete role. It is currently assigned to ${userCount} users.`
+        );
+      }
+
+      // 3. Clean up the Bridge Table
+      await tx.rolePermission.deleteMany({
+        where: { roleId: id }
+      });
+
+      // 4. Delete the actual Role
+      return await tx.role.delete({
+        where: { id }
+      });
+    });
   }
 }
