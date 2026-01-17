@@ -22,11 +22,14 @@ async function bootstrap() {
   // validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
+      whitelist: true,               // Strips properties without decorators
+      forbidNonWhitelisted: true,    // Throws error if non-decorated props exist
+      transform: true,               // Automatically transforms payloads to DTO instances
     }),
   );
+
+  // global exception filter
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }

@@ -19,6 +19,12 @@ import { HandlePrismaException } from 'src/common/handle-prisma-exception';
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
+  /**
+   * Create a new user
+   * @param request 
+   * @param profileImage 
+   * @returns Promise<User>
+   */
   async createUser(request: CreateUserDto, profileImage?: string) {
     const hashedPassword = await bcrypt.hash(
       request.password,
@@ -66,6 +72,13 @@ export class UserService {
     }
   }
 
+  /**
+   * Update an existing user
+   * @param id 
+   * @param request 
+   * @param profileImage 
+   * @returns Promise<User>
+   */
   async updateUser(id: string, request: UpdateUserDto, profileImage?: string) {
     if (request.password) {
       request.password = await bcrypt.hash(

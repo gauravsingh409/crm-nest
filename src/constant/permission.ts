@@ -25,7 +25,17 @@ export const PERMISSIONS = {
  *              Permission Permission
  * ===========================================
  */
-PERMISSION_READ: 'permission:read'
+PERMISSION_READ: 'permission:read',
+
+/**
+ * ===========================================
+ *              Role Permission
+ * ===========================================
+ */
+ROLE_READ: 'role:read',
+ROLE_CREATE: 'role:create',
+ROLE_UPDATE: 'role:update',
+ROLE_DELETE: 'role:delete',
 } as const;
 export type PermissionKey = keyof typeof PERMISSIONS;
 export type PermissionValue = (typeof PERMISSIONS)[PermissionKey];
