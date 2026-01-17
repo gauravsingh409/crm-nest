@@ -61,13 +61,11 @@ export class UserController {
     @UploadedFile() file?: Express.Multer.File,
   ) {
 
-    console.log(body);
     const profileImagePath = file
       ? `/uploads/profiles/${file.filename}`
       : undefined;
 
-    // const savedUser = await this.userService.createUser(body, profileImagePath);
-    const savedUser = body;
+    const savedUser = await this.userService.createUser(body, profileImagePath);
 
 
     return ResponseService.success(savedUser, 'User created successfully', 201);

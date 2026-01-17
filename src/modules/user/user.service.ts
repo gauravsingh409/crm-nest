@@ -81,42 +81,67 @@ export class UserService {
    * @returns Promise<User>
    */
   async updateUser(id: string, request: UpdateUserDto, profileImage?: string) {
+    // 1. Handle Password Hashing if provided
     if (request.password) {
       request.password = await bcrypt.hash(
         request.password,
-        parseInt(process.env.BCRYPT_SALT_ROUNDS || '10'),
+        Number(process.env.BCRYPT_SALT_ROUNDS ?? 10),
       );
     }
 
     try {
-
       const updatedUser = await this.prismaService.user.update({
         where: { id },
-        omit: { password: true },
-        include: { profile: true },
         data: {
-          ...(request.email && { email: request.email }),
-          ...(request.password && { password: request.password }),
+          email: request.email,
+          password: request.password,
+          // Update Profile (Nested)
           profile: {
             update: {
-              ...(request.firstName && { firstName: request.firstName }),
-              ...(request.lastName && { lastName: request.lastName }),
-              ...(request.phone && { phone: request.phone }),
+              firstName: request.firstName,
+              lastName: request.lastName,
+              phone: request.phone,
               ...(profileImage && { profile: profileImage }),
             },
           },
+          // Update Roles (Many-to-Many Bridge Table)
+          ...(request.role && {
+            roles: {
+              deleteMany: {}, // Wipe existing roles for this user
+              create: request.role.map((roleId) => ({
+                role: {
+                  connect: { id: roleId },
+                },
+              })),
+            },
+          }),
         },
+        include: { profile: true },
+        omit: { password: true },
       });
 
       return this.mapUserAndProfile(updatedUser);
     } catch (error) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('Email already exists');
+      // 2. Consistent Error Handling (matching your createUser style)
+      if (error.code === 'P2025') {
+        throw new BadRequestException('User or Role not found');
       }
-      throw error;
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException('Email already exists');
+        }
+      }
+
+      throw new InternalServerErrorException('Failed to update user');
     }
   }
 
+  /**
+   * Get all users
+   * @param pagination 
+   * @returns Promise<{ records: User[]; meta: MetaData }>
+   */
   async getAllUser(pagination: PaginationDto) {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
