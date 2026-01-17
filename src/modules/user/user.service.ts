@@ -13,7 +13,6 @@ import { PaginationDto } from 'src/common/pagination.dto';
 import { ResponseService } from 'src/common/response.service';
 import { Prisma } from '@prisma/client';
 import { HandlePrismaException } from 'src/common/handle-prisma-exception';
-import { use } from 'passport';
 
 @Injectable()
 export class UserService {

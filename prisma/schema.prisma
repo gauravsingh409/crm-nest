@@ -146,7 +146,6 @@ model Lead {
 }
 
 // Lead Activities
-
 enum ActivityType {
   CALL
 }

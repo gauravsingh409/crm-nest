@@ -7,23 +7,42 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { ResponseService } from 'src/common/response.service';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
+import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { PERMISSIONS } from 'src/constant/permission';
 
 @Controller('branch')
 export class BranchController {
-  constructor(private readonly branchService: BranchService) {}
+  constructor(private readonly branchService: BranchService) { }
 
+  /**
+   * Create a new branch
+   * @param createBranchDto 
+   * @returns Promise<Branch>
+   */
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.BRANCH_CREATE)
   @Post()
   async create(@Body() createBranchDto: CreateBranchDto) {
     const response = await this.branchService.create(createBranchDto);
     return ResponseService.success(response, 'Branch Create successfully', 201);
   }
 
+  /**
+   * Get all branches
+   * @param pagination 
+   * @returns Promise<{ records: Branch[]; meta: MetaData }>
+   */
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.BRANCH_READ)
   @Get()
   async findAll(@Query() pagination: PaginationDto) {
     const { page, limit } = pagination;
@@ -31,6 +50,13 @@ export class BranchController {
     return ResponseService.pagination(response.records, response.meta);
   }
 
+  /**
+   * Get branch details
+   * @param id 
+   * @returns Promise<Branch>
+   */
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.BRANCH_READ)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const branchDetails = await this.branchService.findOne(id);
@@ -41,6 +67,14 @@ export class BranchController {
     );
   }
 
+  /**
+   * Update a branch
+   * @param id 
+   * @param updateBranchDto 
+   * @returns Promise<Branch>
+   */
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.BRANCH_UPDATE)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -54,6 +88,13 @@ export class BranchController {
     );
   }
 
+  /**
+   * Delete a branch
+   * @param id 
+   * @returns Promise<{ message: string; branch: Branch }>
+   */
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.BRANCH_DELETE)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const deletedBranch = await this.branchService.remove(id);
