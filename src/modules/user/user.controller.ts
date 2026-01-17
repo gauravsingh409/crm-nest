@@ -32,7 +32,7 @@ export class UserController {
   @Permissions(PERMISSIONS.USER_READ)
   @Get('/')
   async findAll(@Query() pagination: PaginationDto) {
-    const { records, meta } = await this.userService.getAllUser(pagination);
+    const { records, meta } = await this.userService.findAll(pagination);
     return ResponseService.pagination(records, meta);
   }
 
@@ -40,7 +40,7 @@ export class UserController {
   @Permissions(PERMISSIONS.USER_READ)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    const user = await this.userService.getUserDetails(id);
+    const user = await this.userService.findOne(id);
     return ResponseService.success(user, 'User details retrived', 200);
   }
 
@@ -109,7 +109,7 @@ export class UserController {
   @Permissions(PERMISSIONS.USER_DELETE)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
-    const deleteUser = await this.userService.deleteUser(id);
+    const deleteUser = await this.userService.remove(id);
     return ResponseService.success(
       deleteUser,
       'User deleted successfully',

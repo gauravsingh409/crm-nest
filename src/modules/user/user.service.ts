@@ -11,9 +11,9 @@ import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { ResponseService } from 'src/common/response.service';
-import { Prisma, User, UserProfile } from '@prisma/client';
-import path from 'path';
+import { Prisma } from '@prisma/client';
 import { HandlePrismaException } from 'src/common/handle-prisma-exception';
+import { use } from 'passport';
 
 @Injectable()
 export class UserService {
@@ -55,9 +55,8 @@ export class UserService {
           }
         },
         include: { profile: true },
-        omit: { password: true },
       })
-      return this.mapUserAndProfile(savedUser);
+      return savedUser;
     } catch (error) {
       if (error.code === 'P2025') {
         throw new BadRequestException('Role not found');
@@ -117,10 +116,9 @@ export class UserService {
           }),
         },
         include: { profile: true },
-        omit: { password: true },
       });
 
-      return this.mapUserAndProfile(updatedUser);
+      return updatedUser;
     } catch (error) {
       // 2. Consistent Error Handling (matching your createUser style)
       if (error.code === 'P2025') {
@@ -142,7 +140,7 @@ export class UserService {
    * @param pagination 
    * @returns Promise<{ records: User[]; meta: MetaData }>
    */
-  async getAllUser(pagination: PaginationDto) {
+  async findAll(pagination: PaginationDto) {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
 
@@ -153,11 +151,22 @@ export class UserService {
         orderBy: {
           createdAt: 'desc',
         },
-        include: { profile: true },
+        include: { profile: true, roles: { select: { role: true } } },
       }),
       this.prismaService.user.count(),
     ]);
-    const flattenedUsers = users.map((user) => this.mapUserAndProfile(user));
+    const flattenedUsers = users.map((user) => ({
+      id: user.id,
+      email: user.email,
+      profile: user.profile?.profile,
+      firstName: user?.profile?.firstName,
+      lastName: user?.profile?.lastName,
+      phone: user?.profile?.phone,
+      roles: user.roles.map((role) => ({
+        id: role.role.id,
+        name: role.role.name
+      })),
+    }));
     return {
       records: flattenedUsers,
       meta: ResponseService.paginationMetaData(
@@ -168,7 +177,12 @@ export class UserService {
     };
   }
 
-  async deleteUser(id: string) {
+  /**
+   * Delete a user
+   * @param id 
+   * @returns Promise<{ message: string; user: User }>
+   */
+  async remove(id: string) {
     try {
       const deletedUser = await this.prismaService.user.delete({
         where: { id },
@@ -198,36 +212,45 @@ export class UserService {
     }
   }
 
-  async getUserDetails(id: string) {
+  /**
+   * Get user details
+   * @param id 
+   * @returns Promise<User>
+   */
+  async findOne(id: string) {
     const user = await this.prismaService.user.findUnique({
       where: { id },
-      omit: { password: true },
-      include: { profile: true },
+      include: {
+        profile: true, roles: {
+          select: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+              }
+            }
+          }
+        },
+      },
     });
+
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    return this.mapUserAndProfile(user);
-  }
-
-  mapUserAndProfile(
-    user: Omit<User, 'password'> & { profile: UserProfile | null },
-  ) {
-    const appUrl = process.env.APP_URL;
     return {
       id: user.id,
-      firstName: user.profile?.firstName ?? null,
-      lastName: user.profile?.lastName ?? null,
-      phone: user.profile?.phone ?? null,
-      profileImage: user.profile?.profile
-        ? `${appUrl}${user.profile.profile}`
-        : null,
       email: user.email,
-      isActive: user.isActive,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+      profile: user.profile?.profile,
+      firstName: user?.profile?.firstName,
+      lastName: user?.profile?.lastName,
+      phone: user?.profile?.phone,
+      roles: user.roles.map((role) => ({
+        id: role.role.id,
+        name: role.role.name
+      })),
+    }
   }
+
 }

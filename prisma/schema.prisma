@@ -18,7 +18,6 @@ model User {
 
   leads          Lead[]         @relation("LeadOwner")
   leadActivities LeadActivity[] @relation("ActivityPerformer")
-  // Relationships
   profile        UserProfile?
 
   @@map("users")
