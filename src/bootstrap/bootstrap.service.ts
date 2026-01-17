@@ -1,6 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { SUPER_ADMIN_ROLE } from 'src/constant/role';
 
@@ -11,7 +10,7 @@ export class BootstrapService implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}
 
   async onModuleInit() {
-    // await this.createSuperAdmin();
+    await this.createSuperAdmin();
   }
 
   private async createSuperAdmin() {

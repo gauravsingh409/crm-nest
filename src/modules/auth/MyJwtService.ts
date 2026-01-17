@@ -21,7 +21,7 @@ export class MyJwtService {
       { ...payload, type: 'access' },
       {
         secret: this.config.getOrThrow('JWT_ACCESS_SECRET'),
-        expiresIn: '15m',
+        expiresIn: '1d',
       },
     );
   }
