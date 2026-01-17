@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { HandlePrismaException } from 'src/common/handle-prisma-exception';
 
 @Injectable()
 export class RoleService {
@@ -43,19 +44,89 @@ export class RoleService {
     return role;
   }
 
-  findAll() {
-    return `This action returns all role`;
+  async findAll() {
+    const roles = await this.prismaService.role.findMany()
+    return roles;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: string) {
+    try {
+      const role = await this.prismaService.role.findUniqueOrThrow({
+        where: {
+          id: id
+        },
+        select: {
+          id: true,
+          name: true,
+          permissions: {
+            include: {
+              permission: true
+            }
+          }
+        }
+      })
+      return {
+        id: role.id,
+        name: role.name,
+        permissions: role.permissions.map((permission) => permission.permission)
+      };
+    } catch (error) {
+      return HandlePrismaException.notFound('Role not found')(error);
+    }
+
+
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: string, updateRoleDto: UpdateRoleDto) {
+    try {
+      const role = await this.prismaService.role.update({
+        where: {
+          id: id
+        },
+        data: {
+          name: updateRoleDto.name,
+          permissions: {
+            deleteMany: {
+              roleId: id,
+            },
+            create: updateRoleDto?.permissions?.map((id) => ({
+              permission: {
+                connect: {
+                  id: id
+                }
+              }
+            }))
+          }
+        },
+        include: {
+          permissions: {
+            include: {
+              permission: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          }
+        }
+      })
+      return role;
+    } catch (error) {
+      return HandlePrismaException.notFound('Role not found')(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: string) {
+    try {
+      const role = await this.prismaService.role.delete({
+        where: {
+          id: id
+        }
+      })
+      return role;
+    } catch (error) {
+      return HandlePrismaException.notFound('Role not found')(error);
+    }
   }
 }

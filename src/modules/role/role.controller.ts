@@ -33,8 +33,9 @@ export class RoleController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.ROLE_READ)
   @Get()
-  findAll() {
-    return this.roleService.findAll();
+  async findAll() {
+    const roles = await this.roleService.findAll();
+    return ResponseService.success(roles, 'Roles fetched successfully', 200);
   }
 
   /**
@@ -46,8 +47,9 @@ export class RoleController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.ROLE_READ)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const role = await this.roleService.findOne(id);
+    return ResponseService.success(role, 'Role fetched successfully', 200);
   }
 
   /**
@@ -59,8 +61,9 @@ export class RoleController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.ROLE_UPDATE)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+  async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+    const role = await this.roleService.update(id, updateRoleDto);
+    return ResponseService.success(role, 'Role updated successfully', 200);
   }
 
 
@@ -72,7 +75,8 @@ export class RoleController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.ROLE_DELETE)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roleService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const role = await this.roleService.remove(id);
+    return ResponseService.success(role, 'Role deleted successfully', 200);
   }
 }
