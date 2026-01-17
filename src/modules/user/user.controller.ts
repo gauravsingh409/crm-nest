@@ -26,9 +26,9 @@ import { PERMISSIONS } from 'src/constant/permission';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
-  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.USER_READ)
   @Get('/')
   async findAll(@Query() pagination: PaginationDto) {
@@ -36,7 +36,7 @@ export class UserController {
     return ResponseService.pagination(records, meta);
   }
 
-  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.USER_READ)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
@@ -44,7 +44,7 @@ export class UserController {
     return ResponseService.success(user, 'User details retrived', 200);
   }
 
-  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.USER_CREATE)
   @Post('/')
   @HttpCode(201)
@@ -60,17 +60,21 @@ export class UserController {
     @Body() body: CreateUserDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
+
+    console.log(body);
     const profileImagePath = file
       ? `/uploads/profiles/${file.filename}`
       : undefined;
 
-    const savedUser = await this.userService.createUser(body, profileImagePath);
+    // const savedUser = await this.userService.createUser(body, profileImagePath);
+    const savedUser = body;
+
 
     return ResponseService.success(savedUser, 'User created successfully', 201);
   }
 
 
-  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.USER_UPDATE)
   @Patch('/:id')
   @HttpCode(200)
@@ -103,7 +107,7 @@ export class UserController {
   }
 
 
-  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.USER_DELETE)
   @Delete('/:id')
   async remove(@Param('id') id: string) {

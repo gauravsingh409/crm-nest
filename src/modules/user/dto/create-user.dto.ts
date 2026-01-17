@@ -1,6 +1,7 @@
+import { Transform } from 'class-transformer';
 import {
+  IsArray,
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
@@ -8,13 +9,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-export enum UserRole {
-  SUPERADMIN = 'SUPER_ADMIN',
-  ADMIN = 'ADMIN',
-  MANAGER = 'MANAGER',
-  BRANCHMANAGER = 'BRANCH_MANAGER',
-  CONTACTAGENT = 'CONTACT_AGENT',
-}
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
@@ -35,6 +29,24 @@ export class CreateUserDto {
   @MinLength(6)
   password: string;
 
-  @IsEnum(UserRole)
-  role: UserRole;
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  /** * Form-data arrives as a string if there's only one item.
+   * This logic ensures it is always an array for @IsArray() to pass.
+   */
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      // If it looks like a JSON string "['role1']", parse it, 
+      // otherwise wrap the plain string in an array.
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : [value];
+      } catch {
+        return [value];
+      }
+    }
+    return value;
+  })
+  role: string[];
 }

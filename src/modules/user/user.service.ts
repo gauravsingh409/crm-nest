@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto, UserRole } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
@@ -17,7 +17,7 @@ import { HandlePrismaException } from 'src/common/handle-prisma-exception';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
   /**
    * Create a new user
@@ -44,18 +44,19 @@ export class UserService {
             },
           },
           roles: {
-            create: {
+            create: request.role.map((role) => ({
               role: {
                 connect: {
-                  name: request.role,
-                },
-              },
-            },
-          },
+                  id: role
+                }
+              }
+            })
+            )
+          }
         },
         include: { profile: true },
         omit: { password: true },
-      });
+      })
       return this.mapUserAndProfile(savedUser);
     } catch (error) {
       if (error.code === 'P2025') {
@@ -88,29 +89,6 @@ export class UserService {
     }
 
     try {
-      // If role is being updated, we need to handle the relation
-      if (request.role) {
-         // First remove all existing roles for this user (enforcing single role per user for now based on DTO)
-         await this.prismaService.userRole.deleteMany({
-             where: { userId: id }
-         });
-         
-         const role = await this.prismaService.role.findUnique({
-            where: { name: request.role }
-         });
-
-         if (!role) {
-             throw new BadRequestException('Role not found');
-         }
-         
-         // Then add the new role
-         await this.prismaService.userRole.create({
-             data: {
-                 userId: id,
-                 roleId: role.id
-             }
-         });
-      }
 
       const updatedUser = await this.prismaService.user.update({
         where: { id },
