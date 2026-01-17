@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { defaultRole } from 'prisma/seed';
+import { SUPER_ADMIN_ROLE } from 'src/constant/role';
 
 @Injectable()
 export class BootstrapService implements OnModuleInit {
@@ -21,7 +21,7 @@ export class BootstrapService implements OnModuleInit {
     const lastName = process.env.SUPER_ADMIN_LAST_NAME;
 
     const role = await this.prisma.role.findUnique({
-      where: { name: defaultRole },
+      where: { name: SUPER_ADMIN_ROLE },
     });
 
     if (!role) {

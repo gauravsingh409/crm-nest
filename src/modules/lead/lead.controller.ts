@@ -15,7 +15,7 @@ import { CreateLeadDto } from './dto/create-lead.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PERMISSIONS } from '../permission/permission';
+import { PERMISSIONS } from '../../constant/permission';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 

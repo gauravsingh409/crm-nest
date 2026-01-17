@@ -1,0 +1,1 @@
+export const SUPER_ADMIN_ROLE = `${process.env.SUPER_ADMIN_ROLE}`

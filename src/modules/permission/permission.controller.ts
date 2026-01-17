@@ -3,7 +3,7 @@ import { PermissionService } from './permission.service';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
-import { PERMISSIONS } from './permission';
+import { PERMISSIONS } from '../../constant/permission';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { ResponseService } from 'src/common/response.service';
 
