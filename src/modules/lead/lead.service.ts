@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { ResponseService } from 'src/common/response.service';

@@ -8,7 +8,7 @@ import { PERMISSIONS } from 'src/constant/permission';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ResponseService } from 'src/common/response.service';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 
 @Controller('lead-activity')
 export class LeadActivityController {

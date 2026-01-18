@@ -12,7 +12,7 @@ import {
 import { ResponseService } from 'src/common/response.service';
 import { LeadService } from './lead.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PERMISSIONS } from '../../constant/permission';

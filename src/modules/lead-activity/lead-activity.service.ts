@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLeadActivityDto } from './dto/create-lead-activity.dto';
 import { UpdateLeadActivityDto } from './dto/update-lead-activity.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 import { ResponseService } from 'src/common/response.service';
 
 @Injectable()

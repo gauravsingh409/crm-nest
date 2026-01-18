@@ -13,7 +13,7 @@ import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { ResponseService } from 'src/common/response.service';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 import { Permissions } from 'src/common/decorators/permissions.decorator';

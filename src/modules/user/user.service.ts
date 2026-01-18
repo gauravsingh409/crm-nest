@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 import { ResponseService } from 'src/common/response.service';
 import { Prisma } from '@prisma/client';
 import { HandlePrismaException } from 'src/common/handle-prisma-exception';

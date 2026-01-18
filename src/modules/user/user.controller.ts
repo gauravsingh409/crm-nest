@@ -17,7 +17,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseService } from 'src/common/response.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationDto } from 'src/common/pagination.dto';
+import { PaginationDto } from 'src/common/filter.dto';
 import { FileUploadInterceptor } from 'src/interceptor/file-upload.interceptor';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
