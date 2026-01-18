@@ -17,7 +17,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseService } from 'src/common/response.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { FileUploadInterceptor } from 'src/interceptor/file-upload.interceptor';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
@@ -31,7 +31,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.USER_READ)
   @Get('/')
-  async findAll(@Query() pagination: PaginationDto) {
+  async findAll(@Query() pagination: FilterDto) {
     const { records, meta } = await this.userService.findAll(pagination);
     return ResponseService.pagination(records, meta);
   }

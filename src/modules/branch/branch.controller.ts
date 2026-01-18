@@ -13,7 +13,7 @@ import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { ResponseService } from 'src/common/response.service';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
@@ -44,7 +44,7 @@ export class BranchController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.BRANCH_READ)
   @Get()
-  async findAll(@Query() pagination: PaginationDto) {
+  async findAll(@Query() pagination: FilterDto) {
     const { page, limit } = pagination;
     const response = await this.branchService.findAll(page, limit);
     return ResponseService.pagination(response.records, response.meta);

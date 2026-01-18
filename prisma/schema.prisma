@@ -142,6 +142,7 @@ model Lead {
   @@index([service])
   @@index([status])
   @@index([ownerId])
+  @@index([createdAt])
   @@map("leads")
 }
 
@@ -175,6 +176,7 @@ model LeadActivity {
   @@index([type])
   @@index([callOutcome])
   @@index([performedById])
+  @@index([createdAt])
 }
 
 // Branch Model

@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { ResponseService } from 'src/common/response.service';
 import { Prisma } from '@prisma/client';
 import { HandlePrismaException } from 'src/common/handle-prisma-exception';
@@ -139,7 +139,7 @@ export class UserService {
    * @param pagination 
    * @returns Promise<{ records: User[]; meta: MetaData }>
    */
-  async findAll(pagination: PaginationDto) {
+  async findAll(pagination: FilterDto) {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
 

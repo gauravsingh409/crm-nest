@@ -12,7 +12,7 @@ import {
 import { ResponseService } from 'src/common/response.service';
 import { LeadService } from './lead.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PERMISSIONS } from '../../constant/permission';
@@ -33,7 +33,7 @@ export class LeadController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.LEAD_READ)
   @Get('/')
-  async findAll(@Query() pagination: PaginationDto) {
+  async findAll(@Query() pagination: FilterDto) {
     const { meta, records } = await this.leadService.findAll(pagination);
     return ResponseService.pagination(records, meta);
   }

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLeadActivityDto } from './dto/create-lead-activity.dto';
 import { UpdateLeadActivityDto } from './dto/update-lead-activity.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { ResponseService } from 'src/common/response.service';
 
 @Injectable()
@@ -41,7 +41,7 @@ export class LeadActivityService {
    * @param pagination 
    * @returns Promise<{ records: LeadActivity[]; meta: MetaData }>
    */
-  async findAll(pagination: PaginationDto) {
+  async findAll(pagination: FilterDto) {
     const { page, limit } = pagination;
     const response = await this.prismaService.leadActivity.findMany({
       skip: (page - 1) * limit,

@@ -8,7 +8,7 @@ import { PERMISSIONS } from 'src/constant/permission';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ResponseService } from 'src/common/response.service';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 
 @Controller('lead-activity')
 export class LeadActivityController {
@@ -45,7 +45,7 @@ export class LeadActivityController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.LEAD_READ)
   @Get()
-  async findAll(@Query() pagination: PaginationDto) {
+  async findAll(@Query() pagination: FilterDto) {
     const { meta, records } = await this.leadActivityService.findAll(pagination);
     return ResponseService.pagination(records, meta);
   }

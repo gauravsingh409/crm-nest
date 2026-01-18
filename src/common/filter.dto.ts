@@ -13,7 +13,7 @@ import { Type } from 'class-transformer';
  * @property {Date} endDate - End date
  * @property {Date} date - Exact date
  */
-export class PaginationDto {
+export class FilterDto {
 
   @IsOptional()
   @IsString()
@@ -36,8 +36,8 @@ export class PaginationDto {
   sortBy?: string = 'createdAt';
 
   @IsOptional()
-  @IsIn(['ASC', 'DESC'])
-  order?: 'ASC' | 'DESC' = 'DESC';
+  @IsIn(['asc', 'desc'])
+  order?: 'asc' | 'desc' = 'desc';
 
   @IsOptional()
   @Type(() => Date)

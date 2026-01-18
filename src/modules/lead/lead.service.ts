@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { ResponseService } from 'src/common/response.service';
@@ -24,17 +24,48 @@ export class LeadService {
     return leadDetails;
   }
 
-  async findAll(pagination: PaginationDto) {
-    const { limit, page } = pagination;
+  async findAll(pagination: FilterDto) {
+    const { limit, page, search, date, startDate, endDate, order, sortBy } = pagination;
     const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {
+        ...(startDate && { gte: new Date(startDate) }),
+        ...(endDate && { lte: new Date(endDate) }),
+      };
+    }
+
+    if (date) {
+      const start = new Date(date);
+      start.setUTCHours(0, 0, 0, 0);
+      const end = new Date(date);
+      end.setUTCHours(23, 59, 59, 999);
+      where.createdAt = { gte: start, lte: end };
+    }
+
+
     const [lead, total] = await Promise.all([
       this.prismaService.lead.findMany({
         skip,
         take: limit,
-        orderBy: { createdAt: 'asc' },
+        orderBy: {
+          [sortBy || 'createdAt']: order || 'asc',
+        },
+        where,
       }),
       this.prismaService.lead.count(),
     ]);
+
     return {
       records: lead,
       meta: ResponseService.paginationMetaData(total, page, limit),

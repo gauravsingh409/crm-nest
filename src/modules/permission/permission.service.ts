@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationDto } from 'src/common/filter.dto';
+import { FilterDto } from 'src/common/filter.dto';
 import { ResponseService } from 'src/common/response.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class PermissionService {
   constructor(private prismaService: PrismaService) { }
 
-  async findAll(pagination: PaginationDto) {
+  async findAll(pagination: FilterDto) {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
     const [permission, total] = await Promise.all([
