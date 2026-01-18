@@ -4,11 +4,11 @@ import {
     IsNotEmpty,
     IsOptional,
     IsString,
-    IsUUID,
     Min
 } from 'class-validator';
 import { ActivityType, CallOutcome } from '@prisma/client';
 import { Transform } from 'class-transformer';
+
 
 export class CreateLeadActivityDto {
     @IsString()

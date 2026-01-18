@@ -13,6 +13,7 @@ import { BranchModule } from './modules/branch/branch.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
+import { LeadActivityModule } from './modules/lead-activity/lead-activity.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PermissionModule } from './modules/permission/permission.module';
     DoctorModule,
     RoleModule,
     PermissionModule,
+    LeadActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
