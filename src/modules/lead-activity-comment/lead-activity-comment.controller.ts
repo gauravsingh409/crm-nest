@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { LeadActivityCommentService } from './lead-activity-comment.service';
 import { CreateLeadActivityCommentDto } from './dto/create-lead-activity-comment.dto';
 import { UpdateLeadActivityCommentDto } from './dto/update-lead-activity-comment.dto';
@@ -8,7 +8,22 @@ import { RolesGuard } from 'src/common/gaurds/role.guard';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { PERMISSIONS } from 'src/constant/permission';
 import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { FilterDto } from 'src/common/filter.dto';
+import { IsOptional, IsString } from 'class-validator';
 
+
+/**
+ * Lead Activity Comment Filter
+ */
+class LeadActivityCommentFilter extends FilterDto {
+  @IsOptional()
+  @IsString()
+  'lead-activity-id'?: string;
+}
+
+/**
+ * Lead Activity Comment Controller
+ */
 @Controller('lead-activity-comment')
 export class LeadActivityCommentController {
   constructor(private readonly leadActivityCommentService: LeadActivityCommentService) { }
@@ -24,9 +39,9 @@ export class LeadActivityCommentController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Permissions(PERMISSIONS.LEAD_ACTIVITY_COMMENT_READ)
-  findAll() {
-    const leadActivityComment = this.leadActivityCommentService.findAll();
-    return ResponseService.success(leadActivityComment, "Lead Activity Comment Fetched Successfully");
+  async findAll(@Query() filter: LeadActivityCommentFilter) {
+    const { meta, records } = await this.leadActivityCommentService.findAll(filter);
+    return ResponseService.pagination(records, meta);
   }
 
   @Get(':id')
@@ -53,3 +68,5 @@ export class LeadActivityCommentController {
     return ResponseService.success(leadActivityComment, "Lead Activity Comment Deleted Successfully");
   }
 }
+
+

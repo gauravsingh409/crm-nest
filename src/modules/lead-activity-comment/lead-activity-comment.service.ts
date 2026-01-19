@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateLeadActivityCommentDto } from './dto/create-lead-activity-comment.dto';
 import { UpdateLeadActivityCommentDto } from './dto/update-lead-activity-comment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FilterDto } from 'src/common/filter.dto';
+import { ResponseService } from 'src/common/response.service';
 
 @Injectable()
 export class LeadActivityCommentService {
@@ -20,8 +22,26 @@ export class LeadActivityCommentService {
     return leadActivityComment;
   }
 
-  findAll() {
-    return `This action returns all leadActivityComment`;
+  async findAll(filter: FilterDto) {
+    const [count, leadActivityComment] = await Promise.all([
+      await this.prismaService.leadActivityComment.count({
+        where: {
+          leadActivityId: filter['lead-activity-id'],
+        },
+      }),
+      await this.prismaService.leadActivityComment.findMany({
+        include: {
+          leadActivity: true,
+        },
+        where: {
+          leadActivityId: filter['lead-activity-id'],
+        },
+      })
+    ])
+    return {
+      records: leadActivityComment,
+      meta: ResponseService.paginationMetaData(count, filter.page, filter.limit),
+    };
   }
 
   findOne(id: number) {
