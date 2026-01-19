@@ -14,6 +14,7 @@ import { DoctorModule } from './modules/doctor/doctor.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { LeadActivityModule } from './modules/lead-activity/lead-activity.module';
+import { LeadActivityCommentModule } from './modules/lead-activity-comment/lead-activity-comment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { LeadActivityModule } from './modules/lead-activity/lead-activity.module
     RoleModule,
     PermissionModule,
     LeadActivityModule,
+    LeadActivityCommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
