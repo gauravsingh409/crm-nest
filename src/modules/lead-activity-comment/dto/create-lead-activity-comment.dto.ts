@@ -4,7 +4,6 @@ export class CreateLeadActivityCommentDto {
 
     @IsString()
     @IsNotEmpty()
-    @IsUUID()
     leadActivityId: string;
 
     @IsString()

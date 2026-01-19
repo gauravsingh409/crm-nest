@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { RolesGuard } from 'src/common/gaurds/role.guard';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { PERMISSIONS } from 'src/constant/permission';
+import { GetUser } from 'src/common/decorators/get-user.decorator';
 
 @Controller('lead-activity-comment')
 export class LeadActivityCommentController {
@@ -15,8 +16,8 @@ export class LeadActivityCommentController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Permissions(PERMISSIONS.LEAD_ACTIVITY_COMMENT_CREATE)
-  create(@Body() createLeadActivityCommentDto: CreateLeadActivityCommentDto) {
-    const leadActivityComment = this.leadActivityCommentService.create(createLeadActivityCommentDto);
+  async create(@Body() createLeadActivityCommentDto: CreateLeadActivityCommentDto, @GetUser() user: any) {
+    const leadActivityComment = await this.leadActivityCommentService.create(createLeadActivityCommentDto, user.id);
     return ResponseService.success(leadActivityComment, "Lead Activity Comment Created Successfully", 201);
   }
 

@@ -1,11 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLeadActivityCommentDto } from './dto/create-lead-activity-comment.dto';
 import { UpdateLeadActivityCommentDto } from './dto/update-lead-activity-comment.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LeadActivityCommentService {
-  create(createLeadActivityCommentDto: CreateLeadActivityCommentDto) {
-    return 'This action adds a new leadActivityComment';
+  constructor(private prismaService: PrismaService) { }
+
+
+  async create(request: CreateLeadActivityCommentDto, userId: string) {
+    const leadActivityComment = await this.prismaService.leadActivityComment.create({
+      data: {
+        leadActivityId: request.leadActivityId,
+        comment: request.content,
+        commentById: userId,
+
+      }
+    })
+    return leadActivityComment;
   }
 
   findAll() {
