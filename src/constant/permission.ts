@@ -46,6 +46,16 @@ export const PERMISSIONS = {
     BRANCH_CREATE: 'branch:create',
     BRANCH_UPDATE: 'branch:update',
     BRANCH_DELETE: 'branch:delete',
+
+    /**
+     * ===========================================
+     *              Lead Activity Comment Permission
+     * ===========================================
+     */
+    LEAD_ACTIVITY_COMMENT_READ: 'lead_activity_comment:read',
+    LEAD_ACTIVITY_COMMENT_CREATE: 'lead_activity_comment:create',
+    LEAD_ACTIVITY_COMMENT_UPDATE: 'lead_activity_comment:update',
+    LEAD_ACTIVITY_COMMENT_DELETE: 'lead_activity_comment:delete',
 } as const;
 export type PermissionKey = keyof typeof PERMISSIONS;
 export type PermissionValue = (typeof PERMISSIONS)[PermissionKey];
