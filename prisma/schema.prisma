@@ -6,19 +6,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   password  String
   roles     UserRole[]
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
-  leads          Lead[]         @relation("LeadOwner")
-  leadActivities LeadActivity[] @relation("ActivityPerformer")
+  leads          Lead[]                @relation("LeadOwner")
+  leadActivities LeadActivity[]        @relation("ActivityPerformer")
   profile        UserProfile?
+  comments       LeadActivityComment[]
 
   @@map("users")
 }
@@ -38,7 +38,7 @@ model UserProfile {
 }
 
 // Role and Permissions
-model Role{
+model Role {
   id          String           @id @default(uuid())
   name        String           @unique
   permissions RolePermission[]
@@ -54,8 +54,8 @@ model Permission {
 model UserRole {
   userId String
   roleId String
-  user   User @relation(fields: [userId], references: [id])
-  role   Role @relation(fields: [roleId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
 
   @@id([userId, roleId])
 }
@@ -161,16 +161,17 @@ enum CallOutcome {
 }
 
 model LeadActivity {
-  id            String       @id @default(cuid())
+  id            String                @id @default(cuid())
   leadId        String
   type          ActivityType
   callOutcome   CallOutcome?
   durationSec   Int?
   notes         String?
   performedById String
-  performedBy   User         @relation("ActivityPerformer", fields: [performedById], references: [id])
-  lead          Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  createdAt     DateTime     @default(now())
+  comments      LeadActivityComment[]
+  performedBy   User                  @relation("ActivityPerformer", fields: [performedById], references: [id])
+  lead          Lead                  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdAt     DateTime              @default(now())
 
   @@index([leadId])
   @@index([type])
@@ -179,26 +180,43 @@ model LeadActivity {
   @@index([createdAt])
 }
 
+// ======================= Lead Activity Comment =======================
+model LeadActivityComment {
+  id             String       @id @default(cuid())
+  leadActivityId String
+  leadActivity   LeadActivity @relation(fields: [leadActivityId], references: [id], onDelete: Cascade)
+  comment        String       @db.Text
+  commentById    String
+  commentBy      User         @relation(fields: [commentById], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([leadActivityId])
+  @@index([commentById])
+  @@index([createdAt])
+  @@map("lead_activity_comments")
+}
+
 // Branch Model
 model Branch {
   id          String   @id @default(cuid())
-  name        String    @unique
-  phone       String    @unique
+  name        String   @unique
+  phone       String   @unique
   address     String
   description String?  @db.Text
   doctors     Doctor[]
-  createdAt     DateTime     @default(now())
+  createdAt   DateTime @default(now())
 
   @@map("branch")
 }
 
 model Doctor {
-  id       String @id @default(cuid())
-  name     String
-  phone    String
-  branchId String
-  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  createdAt     DateTime     @default(now())
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  branchId  String
+  branch    Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
   @@index([name])
   @@index([branchId])
