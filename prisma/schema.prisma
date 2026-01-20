@@ -19,6 +19,8 @@ model User {
   leadActivities LeadActivity[]        @relation("ActivityPerformer")
   profile        UserProfile?
   comments       LeadActivityComment[]
+  followUps FollowUp[]
+  appointments Appointment[]
 
   @@map("users")
 }
@@ -69,7 +71,7 @@ model RolePermission {
   @@id([roleId, permissionId])
 }
 
-// Leads Model
+// ======================== Leads Model ================================
 enum LeadSource {
   WHATSAPP
   FACEBOOK
@@ -144,9 +146,11 @@ model Lead {
   @@index([ownerId])
   @@index([createdAt])
   @@map("leads")
+  followUps FollowUp[]
+  appointments Appointment[]
 }
 
-// Lead Activities
+// ======================== Lead Activities ================================
 enum ActivityType {
   CALL
 }
@@ -196,8 +200,56 @@ model LeadActivityComment {
   @@index([createdAt])
   @@map("lead_activity_comments")
 }
+// ======================== Follow Up =====================================
+model FollowUp{
+  id String @id @default(cuid())
+  date_time DateTime
+  remainder DateTime
+  assignee_id String
+  title String
+  lead_id String
+  branch_id String
+  doctor_id String
+  service LeadService
+  appointment_date_time DateTime
 
-// Branch Model
+  lead Lead @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+  doctor Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  assignee User @relation(fields: [assignee_id], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  createdAt DateTime @default(now())
+
+  @@index([lead_id])
+  @@index([assignee_id])
+  @@index([createdAt])
+}
+
+// ========================= Appointment =================================
+model Appointment{
+  id String @id @default(cuid())
+  lead_id String
+  branch_id String
+  doctor_id String
+  follow_up_id String
+  user_id String
+  service LeadService
+  appointment_date_time DateTime
+
+  lead Lead @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+  doctor Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
+  followUp FollowUp @relation(fields: [follow_up_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([lead_id])
+  @@index([branch_id])
+  @@index([doctor_id])
+  @@index([createdAt])
+}
+
+// ======================== Branch Model ================================
 model Branch {
   id          String   @id @default(cuid())
   name        String   @unique
@@ -208,8 +260,10 @@ model Branch {
   createdAt   DateTime @default(now())
 
   @@map("branch")
+  followUps FollowUp[]
+  appointments Appointment[]
 }
-
+// ======================== Doctor Model ================================
 model Doctor {
   id        String   @id @default(cuid())
   name      String
@@ -222,4 +276,6 @@ model Doctor {
   @@index([branchId])
   @@index([branchId, name])
   @@map("doctor")
+  followUps FollowUp[]
+  appointments Appointment[]
 }
