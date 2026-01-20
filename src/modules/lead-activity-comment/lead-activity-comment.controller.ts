@@ -47,24 +47,24 @@ export class LeadActivityCommentController {
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Permissions(PERMISSIONS.LEAD_ACTIVITY_COMMENT_READ)
-  findOne(@Param('id') id: string) {
-    const leadActivityComment = this.leadActivityCommentService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const leadActivityComment = await this.leadActivityCommentService.findOne(id);
     return ResponseService.success(leadActivityComment, "Lead Activity Comment Fetched Successfully");
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Permissions(PERMISSIONS.LEAD_ACTIVITY_COMMENT_UPDATE)
-  update(@Param('id') id: string, @Body() updateLeadActivityCommentDto: UpdateLeadActivityCommentDto) {
-    const leadActivityComment = this.leadActivityCommentService.update(+id, updateLeadActivityCommentDto);
+  async update(@Param('id') id: string, @Body() updateLeadActivityCommentDto: UpdateLeadActivityCommentDto) {
+    const leadActivityComment = await this.leadActivityCommentService.update(id, updateLeadActivityCommentDto);
     return ResponseService.success(leadActivityComment, "Lead Activity Comment Updated Successfully");
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Permissions(PERMISSIONS.LEAD_ACTIVITY_COMMENT_DELETE)
-  remove(@Param('id') id: string) {
-    const leadActivityComment = this.leadActivityCommentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const leadActivityComment = await this.leadActivityCommentService.remove(id);
     return ResponseService.success(leadActivityComment, "Lead Activity Comment Deleted Successfully");
   }
 }

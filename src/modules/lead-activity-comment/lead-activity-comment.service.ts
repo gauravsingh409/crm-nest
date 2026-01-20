@@ -4,6 +4,7 @@ import { UpdateLeadActivityCommentDto } from './dto/update-lead-activity-comment
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FilterDto } from 'src/common/filter.dto';
 import { ResponseService } from 'src/common/response.service';
+import { HandlePrismaException } from 'src/common/handle-prisma-exception';
 
 @Injectable()
 export class LeadActivityCommentService {
@@ -44,15 +45,38 @@ export class LeadActivityCommentService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} leadActivityComment`;
+  async findOne(id: string) {
+    const leadActivityComment = await this.prismaService.leadActivityComment.findUnique({
+      where: {
+        id: id,
+      },
+    })
+    return leadActivityComment;
   }
 
-  update(id: number, updateLeadActivityCommentDto: UpdateLeadActivityCommentDto) {
-    return `This action updates a #${id} leadActivityComment`;
+  async update(id: string, request: UpdateLeadActivityCommentDto) {
+    const leadActivityComment = await this.prismaService.leadActivityComment.update({
+      where: {
+        id: id,
+      },
+      data: {
+        comment: request.content,
+      },
+    })
+    return leadActivityComment;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} leadActivityComment`;
+  async remove(id: string) {
+    try {
+      const leadActivityComment = await this.prismaService.leadActivityComment.delete({
+        where: {
+          id: id,
+        },
+      })
+      return leadActivityComment;
+    } catch (error) {
+      HandlePrismaException.notFound("Comment not found")(error);
+    }
+
   }
 }
