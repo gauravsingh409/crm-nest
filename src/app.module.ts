@@ -15,6 +15,7 @@ import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { LeadActivityModule } from './modules/lead-activity/lead-activity.module';
 import { LeadActivityCommentModule } from './modules/lead-activity-comment/lead-activity-comment.module';
+import { FollowUpModule } from './modules/follow-up/follow-up.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { LeadActivityCommentModule } from './modules/lead-activity-comment/lead-
     PermissionModule,
     LeadActivityModule,
     LeadActivityCommentModule,
+    FollowUpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
