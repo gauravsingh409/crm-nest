@@ -218,7 +218,11 @@ export class UserService {
    */
   async findOne(id: string) {
     const user = await this.prismaService.user.findUnique({
-      where: { id },
+      where: {
+        id, profile: {
+
+        }
+      },
       include: {
         profile: true, roles: {
           select: {

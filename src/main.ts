@@ -6,10 +6,14 @@ import { AllExceptionsFilter } from './common/exception-filter';
 import { ResponseService } from './common/response.service';
 import { ValidationExceptionFilter } from './common/validation-exception.filter';
 import { ValidationError } from 'class-validator';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // const app = await NestFactory.createMicroservice(AppModule);
+
+  // Enable cookie parser
+  app.use(cookieParser());
 
   // Api Documentation
   const config = new DocumentBuilder()
