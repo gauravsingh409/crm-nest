@@ -1,34 +1,59 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { FollowUpService } from './follow-up.service';
 import { CreateFollowUpDto } from './dto/create-follow-up.dto';
 import { UpdateFollowUpDto } from './dto/update-follow-up.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { PERMISSIONS } from 'src/constant/permission';
+import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
+import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
+import { ResponseService } from 'src/common/response.service';
 
 @Controller('follow-up')
 export class FollowUpController {
-  constructor(private readonly followUpService: FollowUpService) {}
+  constructor(private readonly followUpService: FollowUpService) { }
 
+  /**
+   * Create a new follow-up
+   * @param createFollowUpDto 
+   * @returns 
+   */
   @Post()
-  create(@Body() createFollowUpDto: CreateFollowUpDto) {
-    return this.followUpService.create(createFollowUpDto);
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.FOLLOW_UP_CREATE)
+  async create(@Body() createFollowUpDto: CreateFollowUpDto) {
+    const result = await this.followUpService.create(createFollowUpDto);
+    return ResponseService.success(result, 'Follow-up created successfully');
   }
 
   @Get()
-  findAll() {
-    return this.followUpService.findAll();
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.FOLLOW_UP_READ)
+  async findAll() {
+    const result = await this.followUpService.findAll();
+    return ResponseService.success(result, 'Follow-ups fetched successfully');
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.followUpService.findOne(+id);
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.FOLLOW_UP_READ)
+  async findOne(@Param('id') id: string) {
+    const result = await this.followUpService.findOne(id);
+    return ResponseService.success(result, 'Follow-up fetched successfully');
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFollowUpDto: UpdateFollowUpDto) {
-    return this.followUpService.update(+id, updateFollowUpDto);
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.FOLLOW_UP_UPDATE)
+  async update(@Param('id') id: string, @Body() updateFollowUpDto: UpdateFollowUpDto) {
+    const result = await this.followUpService.update(id, updateFollowUpDto);
+    return ResponseService.success(result, 'Follow-up updated successfully');
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.followUpService.remove(+id);
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions(PERMISSIONS.FOLLOW_UP_DELETE)
+  async remove(@Param('id') id: string) {
+    const result = await this.followUpService.remove(id);
+    return ResponseService.success(result, 'Follow-up deleted successfully');
   }
 }

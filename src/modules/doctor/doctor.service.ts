@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class DoctorService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
   async create(request: CreateDoctorDto) {
     try {
-      return await this.prismaService.doctor.create({
+      const doctor = await this.prismaService.doctor.create({
         data: {
           name: request.name,
           phone: request.phone,
@@ -20,7 +20,10 @@ export class DoctorService {
           },
         },
       });
-    } catch (error) {}
+      return doctor;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   findAll() {

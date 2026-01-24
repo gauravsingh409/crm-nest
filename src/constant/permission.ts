@@ -56,6 +56,19 @@ export const PERMISSIONS = {
     LEAD_ACTIVITY_COMMENT_CREATE: 'lead_activity_comment:create',
     LEAD_ACTIVITY_COMMENT_UPDATE: 'lead_activity_comment:update',
     LEAD_ACTIVITY_COMMENT_DELETE: 'lead_activity_comment:delete',
+
+
+    /**
+     * ===========================================
+     *              Follow Up Permission
+     * ===========================================
+     */
+    FOLLOW_UP_READ: 'follow_up:read',
+    FOLLOW_UP_CREATE: 'follow_up:create',
+    FOLLOW_UP_UPDATE: 'follow_up:update',
+    FOLLOW_UP_DELETE: 'follow_up:delete',
+
+
 } as const;
 export type PermissionKey = keyof typeof PERMISSIONS;
 export type PermissionValue = (typeof PERMISSIONS)[PermissionKey];

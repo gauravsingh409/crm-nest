@@ -10,14 +10,16 @@ import {
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { ResponseService } from 'src/common/response.service';
 
 @Controller('doctor')
 export class DoctorController {
-  constructor(private readonly doctorService: DoctorService) {}
+  constructor(private readonly doctorService: DoctorService) { }
 
   @Post()
   async create(@Body() createDoctorDto: CreateDoctorDto) {
-    return await this.doctorService.create(createDoctorDto);
+    const doctor = await this.doctorService.create(createDoctorDto);
+    return ResponseService.success(doctor, "Doctor created successfully", 201);
   }
 
   @Get()
