@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { ResponseService } from 'src/common/response.service';
+import { FilterDto } from 'src/common/filter.dto';
 
 @Controller('doctor')
 export class DoctorController {
@@ -23,22 +25,26 @@ export class DoctorController {
   }
 
   @Get()
-  findAll() {
-    return this.doctorService.findAll();
+  async findAll(@Query() filter: FilterDto) {
+    const doctors = await this.doctorService.findAll(filter);
+    return ResponseService.success(doctors, "Doctors fetched successfully", 200);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.doctorService.findOne(+id);
+    const doctor = this.doctorService.findOne(id);
+    return ResponseService.success(doctor, "Doctor fetched successfully", 200);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDoctorDto: UpdateDoctorDto) {
-    return this.doctorService.update(+id, updateDoctorDto);
+    const doctor = this.doctorService.update(id, updateDoctorDto);
+    return ResponseService.success(doctor, "Doctor updated successfully", 200);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.doctorService.remove(+id);
+    const doctor = this.doctorService.remove(id);
+    return ResponseService.success(doctor, "Doctor deleted successfully", 200);
   }
 }

@@ -24,8 +24,8 @@ export class LeadService {
     return leadDetails;
   }
 
-  async findAll(pagination: FilterDto) {
-    const { limit, page, search, date, startDate, endDate, order, sortBy } = pagination;
+  async findAll(filter: FilterDto) {
+    const { limit, page, search, date, startDate, endDate, order, sortBy } = filter;
     const skip = (page - 1) * limit;
 
     const where: any = {};

@@ -33,8 +33,8 @@ export class LeadController {
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.LEAD_READ)
   @Get('/')
-  async findAll(@Query() pagination: FilterDto) {
-    const { meta, records } = await this.leadService.findAll(pagination);
+  async findAll(@Query() filter: FilterDto) {
+    const { meta, records } = await this.leadService.findAll(filter);
     return ResponseService.pagination(records, meta);
   }
 
