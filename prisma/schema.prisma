@@ -268,11 +268,12 @@ model Doctor {
   branchId  String
   branch    Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  followUps FollowUp[]
+  appointments Appointment[]
+
 
   @@index([name])
   @@index([branchId])
   @@index([branchId, name])
   @@map("doctor")
-  followUps FollowUp[]
-  appointments Appointment[]
 }
