@@ -16,6 +16,7 @@ import { PermissionModule } from './modules/permission/permission.module';
 import { LeadActivityModule } from './modules/lead-activity/lead-activity.module';
 import { LeadActivityCommentModule } from './modules/lead-activity-comment/lead-activity-comment.module';
 import { FollowUpModule } from './modules/follow-up/follow-up.module';
+import { ExistsConstraint } from './common/decorators/exists.validator';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { FollowUpModule } from './modules/follow-up/follow-up.module';
     FollowUpModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ExistsConstraint],
+  exports: [ExistsConstraint],
 })
-export class AppModule {}
+export class AppModule { }

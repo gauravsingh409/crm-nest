@@ -11,15 +11,15 @@ export class DoctorService {
   constructor(private prismaService: PrismaService) { }
 
   async create(request: CreateDoctorDto) {
-    const branch = await this.prismaService.branch.findUnique({
-      where: {
-        id: request.branch,
-      },
-    });
+    // const branch = await this.prismaService.branch.findUnique({
+    //   where: {
+    //     id: request.branch,
+    //   },
+    // });
 
-    if (!branch) {
-      throw new BadRequestException("Branch not found");
-    }
+    // if (!branch) {
+    //   throw new BadRequestException("Branch not found");
+    // }
 
     const doctor = await this.prismaService.doctor.create({
       data: {

@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './common/exception-filter';
 import { ResponseService } from './common/response.service';
 import { ValidationExceptionFilter } from './common/validation-exception.filter';
-import { ValidationError } from 'class-validator';
+import { useContainer, ValidationError } from 'class-validator';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -47,6 +47,9 @@ async function bootstrap() {
       },
     }),
   );
+
+  // This line allows class-validator to use NestJS DI
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // global exception filter
   app.useGlobalFilters(new AllExceptionsFilter(), new ValidationExceptionFilter());
