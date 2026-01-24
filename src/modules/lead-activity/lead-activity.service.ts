@@ -80,8 +80,8 @@ export class LeadActivityService {
       data: {
         lead: {
           connect: {
-            id: request.leadId
-          }
+            id: request.leadId,
+          },
         },
         type: request.type,
         callOutcome: request.callOutcome,
@@ -90,7 +90,7 @@ export class LeadActivityService {
         performedBy: {
           connect: {
             id: request.performedById
-          }
+          },
         },
       },
     });

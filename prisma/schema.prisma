@@ -217,7 +217,6 @@ model FollowUp{
   branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
   doctor Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
   assignee User @relation(fields: [assignee_id], references: [id], onDelete: Cascade)
-  appointments Appointment[]
   createdAt DateTime @default(now())
 
   @@index([lead_id])
@@ -231,7 +230,6 @@ model Appointment{
   lead_id String
   branch_id String
   doctor_id String
-  follow_up_id String
   user_id String
   service LeadService
   appointment_date_time DateTime
@@ -239,7 +237,6 @@ model Appointment{
   lead Lead @relation(fields: [lead_id], references: [id], onDelete: Cascade)
   branch Branch @relation(fields: [branch_id], references: [id], onDelete: Cascade)
   doctor Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade)
-  followUp FollowUp @relation(fields: [follow_up_id], references: [id], onDelete: Cascade)
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
