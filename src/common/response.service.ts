@@ -9,11 +9,11 @@ export class ResponseService {
     };
   }
 
-  static pagination(data: unknown, meta: unknown) {
+  static pagination(data: unknown, meta: unknown, message = 'Data retrived successfully') {
     return {
       success: true,
       statusCode: 200,
-      message: 'Data retrived successfully',
+      message,
       data,
       pagination: meta,
       error: null,

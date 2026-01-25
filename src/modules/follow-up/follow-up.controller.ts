@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { FollowUpService } from './follow-up.service';
 import { CreateFollowUpDto } from './dto/create-follow-up.dto';
 import { UpdateFollowUpDto } from './dto/update-follow-up.dto';
@@ -7,6 +7,7 @@ import { PERMISSIONS } from 'src/constant/permission';
 import { JwtAuthGuard } from 'src/common/gaurds/jwt-auth.gaurd';
 import { PermissionsGuard } from 'src/common/gaurds/permission.guard';
 import { ResponseService } from 'src/common/response.service';
+import { FilterDto } from 'src/common/filter.dto';
 
 @Controller('follow-up')
 export class FollowUpController {
@@ -28,9 +29,9 @@ export class FollowUpController {
   @Get()
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions(PERMISSIONS.FOLLOW_UP_READ)
-  async findAll() {
-    const result = await this.followUpService.findAll();
-    return ResponseService.success(result, 'Follow-ups fetched successfully');
+  async findAll(@Query() filterDto: FilterDto) {
+    const result = await this.followUpService.findAll(filterDto);
+    return ResponseService.pagination(result.data, result.meta, "Follow-up fetched successfully");
   }
 
   @Get(':id')
