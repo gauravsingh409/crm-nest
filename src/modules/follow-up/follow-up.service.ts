@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFollowUpDto } from './dto/create-follow-up.dto';
 import { UpdateFollowUpDto } from './dto/update-follow-up.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -70,9 +70,20 @@ export class FollowUpService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.followUp.findUnique({
+    const followUp = await this.prisma.followUp.findUnique({
       where: { id },
+      include: {
+        lead: true,
+        branch: true,
+        doctor: true,
+        assignee: true,
+      }
     });
+
+    if (!followUp) {
+      throw new NotFoundException(`Follow-up with ID ${id} not found`);
+    }
+    return followUp;
   }
 
   async update(id: string, updateFollowUpDto: UpdateFollowUpDto) {
