@@ -5,7 +5,6 @@ export class ResponseService {
       statusCode,
       message,
       data,
-      error: null,
     };
   }
 
@@ -16,7 +15,6 @@ export class ResponseService {
       message,
       data,
       pagination: meta,
-      error: null,
     };
   }
 
@@ -49,16 +47,6 @@ export class ResponseService {
       message: message,
       data,
       error: error,
-    };
-  }
-
-  static custom({ success, statusCode, message, data, error }: any) {
-    return {
-      success,
-      statusCode,
-      message,
-      data,
-      error,
     };
   }
 }
