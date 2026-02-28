@@ -17,6 +17,8 @@ import { LeadActivityModule } from './modules/lead-activity/lead-activity.module
 import { LeadActivityCommentModule } from './modules/lead-activity-comment/lead-activity-comment.module';
 import { FollowUpModule } from './modules/follow-up/follow-up.module';
 import { ExistsConstraint } from './common/decorators/exists.validator';
+import { ChatGateway } from './modules/chat/chat.gateway';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { ExistsConstraint } from './common/decorators/exists.validator';
     LeadActivityModule,
     LeadActivityCommentModule,
     FollowUpModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService, ExistsConstraint],

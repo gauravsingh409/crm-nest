@@ -58,7 +58,7 @@ export class AuthService {
         refreshToken,
       },
     };
-    return ResponseService.success(loginData, 'User logged in', 200);
+    return loginData;
   }
 
   // Validate the user with email and password
