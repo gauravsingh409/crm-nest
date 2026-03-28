@@ -12,11 +12,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // const app = await NestFactory.createMicroservice(AppModule);
 
-  // =================
+  // ==============================
   // CORS Setup
-  // ================= 
+  // =============================
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://your-frontend-app.com'],
+    origin: ['http://localhost:5173', 'https://your-frontend-app.com'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Allow cookies/auth headers
   });
